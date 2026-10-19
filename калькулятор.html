@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Калькулятор</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #1e1e2e; color: #eee; display: flex; justify-content: center; padding-top: 50px; }
+  .box { background: #2b2b3d; padding: 30px; border-radius: 12px; width: 420px; box-shadow: 0 0 20px rgba(0,0,0,.5); }
+  h1 { text-align: center; color: #7ab0ff; }
+  label { display: block; margin-top: 15px; }
+  input, select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #555; box-sizing: border-box; font-size: 15px; }
+  button { margin-top: 20px; width: 100%; padding: 10px; background: #4a7dff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #3a66d6; }
+  #output { margin-top: 20px; background: #1a1a26; padding: 15px; border-radius: 8px; white-space: pre-line; min-height: 40px; }
+  .err { color: #ff7a7a; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Калькулятор&trade;</h1>
+
+  <label>Сколько вам лет?</label>
+  <input type="number" id="age" placeholder="Ваш возраст">
+
+  <label>Какие числа хотите использовать?</label>
+  <select id="kind">
+    <option value="">-- выберите --</option>
+    <option value="1">1 — целые</option>
+    <option value="2">2 — дробные</option>
+  </select>
+
+  <label>Что вы хотите сделать?</label>
+  <select id="op">
+    <option value="">-- выберите --</option>
+    <option value="1">1 — сложение</option>
+    <option value="2">2 — вычитание</option>
+    <option value="3">3 — деление</option>
+    <option value="4">4 — остаток от деления</option>
+    <option value="5">5 — целочисленное деление</option>
+    <option value="6">6 — умножение</option>
+    <option value="7">7 — возведение в степень</option>
+    <option value="8">8 — всё сразу</option>
+  </select>
+
+  <label>Первое число:</label>
+  <input type="number" id="n1" step="any">
+
+  <label>Второе число:</label>
+  <input type="number" id="n2" step="any">
+
+  <button onclick="run()">Посчитать</button>
+
+  <div id="output"></div>
+</div>
+
+<script>
+function run() {
+  const out = document.getElementById('output');
+  out.classList.remove('err');
+  const age = parseInt(document.getElementById('age').value, 10);
+  const kind = document.getElementById('kind').value;
+  const op = document.getElementById('op').value;
+  const n1 = parseFloat(document.getElementById('n1').value);
+  const n2 = parseFloat(document.getElementById('n2').value);
+
+  if (isNaN(age) || age === 0) { show('Введите ваш возраст!', true); return; }
+  if (age < 7) { show('Вам запрещен вход в моё приложение™\nПриложение доступно с 7 лет', true); return; }
+
+  if (!kind) { show('Это не то что я просил!\nВам запрещён вход в моё приложение™', true); return; }
+
+  if (!op) { show('Это не то что я просил!\nВам запрещён вход в моё приложение™', true); return; }
+  if (isNaN(n1) || isNaN(n2)) { show('Введите оба числа!', true); return; }
+  if (kind === '2') {
+    // дробные числа — округляем результат деления до разумной точности
+  }
+  if ((op === '3' || op === '5' || op === '4') && n2 === 0) { show('На ноль делить нельзя!', true); return; }
+
+  let text = '';
+  switch (op) {
+    case '1': text = 'Сложение: ' + (n1 + n2); break;
+    case '2': text = 'Вычитание: ' + (n1 - n2); break;
+    case '3': text = 'Деление: ' + (n1 / n2); break;
+    case '4': text = 'Остаток от деления: ' + (n1 % n2); break;
+    case '5': text = 'Целочисленное деление: ' + Math.floor(n1 / n2); break;
+    case '6': text = 'Умножение: ' + (n1 * n2); break;
+    case '7': text = 'Возведение в степень: ' + Math.pow(n1, n2); break;
+    case '8':
+      text = 'Сложение: ' + (n1 + n2) +
+             '\nВычитание: ' + (n1 - n2) +
+             '\nДеление: ' + (n1 / n2) +
+             '\nОстаток от деления: ' + (n1 % n2) +
+             '\nЦелочисленное деление: ' + Math.floor(n1 / n2) +
+             '\nУмножение: ' + (n1 * n2) +
+             '\nВозведение в степень: ' + Math.pow(n1, n2);
+      break;
+  }
+  text += '\nСпасибо что выбрали моё приложение!™';
+  show(text, false);
+}
+
+function show(msg, isError) {
+  const out = document.getElementById('output');
+  out.textContent = msg;
+  if (isError) out.classList.add('err');
+}
+</script>
+</body>
+</html>
